@@ -1,4 +1,4 @@
-# custom_components/purpleair_aqi/__init__.py
+# custom_components/purpleair/__init__.py
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from .api import PurpleAirClient, PurpleAirConfig
 
-DOMAIN = "purpleair_aqi"
+DOMAIN = "purpleair"
 PLATFORMS = ["sensor", "number"]
 
 _LOGGER = logging.getLogger(__name__)
