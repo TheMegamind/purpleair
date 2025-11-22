@@ -12,25 +12,24 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from .api import PurpleAirClient, PurpleAirConfig
 
-PLATFORMS = ["sensor", "number"]
-
 DOMAIN = "purpleair_aqi"
+PLATFORMS = ["sensor", "number"]
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
-    # No YAML support; config_flow only
+    """Set up integration (YAML config not supported)."""
     return True
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Set up PurpleAir AQI from a config entry."""
     hass.data.setdefault(DOMAIN, {})
 
     session = aiohttp.ClientSession()
 
     conf = entry.data
-    opts = entry.options or {}
 
     device_search = conf.get("device_search", True)
     sensor_index = conf.get("sensor_index")
@@ -71,17 +70,24 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         update_interval=timedelta(minutes=cfg.update_interval),
     )
 
+    # Fetch initial data
     await coordinator.async_config_entry_first_refresh()
 
-    hass.data[DOMAIN]["session"] = session
-    hass.data[DOMAIN]["coordinator"] = coordinator
-    hass.data[DOMAIN]["config"] = cfg
+    # Store references
+    hass.data[DOMAIN] = {
+        "session": session,
+        "coordinator": coordinator,
+        "config": cfg,
+    }
 
+    # Load ALL platforms (sensor AND number)
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+
     return True
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Unload PurpleAir AQI."""
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
     session = hass.data[DOMAIN].pop("session", None)
@@ -90,4 +96,5 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     if unload_ok:
         hass.data.pop(DOMAIN, None)
+
     return unload_ok
