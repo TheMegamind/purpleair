@@ -1,9 +1,11 @@
 {
   "name": "PurpleAir AQI",
-  "version": "0.1.0",
+  "domains": ["sensor"],
+  "country": "US",
+  "homeassistant": "2024.1.0",
+  "render_readme": true,
   "hacs": {
     "type": "integration"
-  },
-  "domains": ["sensor"]
+  }
 }
 
