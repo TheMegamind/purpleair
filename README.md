@@ -48,7 +48,7 @@ Fetches PM2.5-based AQI from nearby PurpleAir sensors, with averaging and PM2.5 
 3. Category: **Integration**
 4. Install → Restart Home Assistant
 5. Go to **Settings → Devices & Services → Add Integration**
-6. Choose **PurpleAir AQI**
+6. Choose **PurpleAir**
 
 ---
 
