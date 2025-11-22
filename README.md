@@ -1,7 +1,7 @@
 
 ---
 
-# PurpleAir AQI – Home Assistant Integration
+# PurpleAir – Home Assistant Custom Integration
 
 Fetches PM2.5-based AQI from nearby PurpleAir sensors, with averaging and PM2.5 conversion options.
 
@@ -90,7 +90,7 @@ Latitude and longitude remain fixed after initial setup. Changing the location r
 
 | Entity                 | Type   | Description                                |
 | ---------------------- | ------ | ------------------------------------------ |
-| `sensor.purpleair_aqi` | Sensor | PM2.5 AQI value, category, and sensor list |
+| `sensor.purpleair` | Sensor | PM2.5 AQI value, category, and sensor list |
 
 ---
 
@@ -103,8 +103,8 @@ service: notify.pushover
 data:
   title: "Air Quality"
   message: >
-    Current AQI: {{ states('sensor.purpleair_aqi') }} –
-    {{ state_attr('sensor.purpleair_aqi', 'category') }}
+    Current AQI: {{ states('sensor.purpleair') }} –
+    {{ state_attr('sensor.purpleair', 'category') }}
 ```
 
 ---
