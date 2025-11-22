@@ -2,7 +2,7 @@
   "domain": "purpleair",
   "name": "PurpleAir AQI",
   "version": "0.0.0-local-test",
-  "documentation": "https://example.com/purpleair_aqi",
+  "documentation": "https://github.com/TheMegamind/purple_air/blob/main/README.md",
   "requirements": [],
   "dependencies": [],
   "codeowners": ["@TheMegamind"],
