@@ -24,7 +24,7 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up PurpleAir AQI from a config entry."""
+    """Set up PurpleAir from a config entry."""
     hass.data.setdefault(DOMAIN, {})
 
     session = aiohttp.ClientSession()
@@ -65,7 +65,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     coordinator = DataUpdateCoordinator(
         hass,
         _LOGGER,
-        name="PurpleAir AQI",
+        name="PurpleAir",
         update_method=async_update,
         update_interval=timedelta(minutes=cfg.update_interval),
     )
@@ -87,7 +87,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Unload PurpleAir AQI."""
+    """Unload PurpleAir."""
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
     session = hass.data[DOMAIN].pop("session", None)
