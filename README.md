@@ -8,7 +8,7 @@ including multi-sensor averaging, category reporting, and conversion options.
 2. Add this repo:
 
 ```
-https://github.com/TheMegamind/purple_air](https://github.com/TheMegamind/purple_air
+[https://github.com/TheMegamind/purple_air](https://github.com/TheMegamind/purple_air
 ```
 
 3. Select category: **Integration**
