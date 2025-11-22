@@ -1,4 +1,4 @@
-# custom_components/purpleair_aqi/api.py
+# custom_components/purpleair/api.py
 
 from __future__ import annotations
 
