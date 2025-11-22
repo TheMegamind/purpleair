@@ -8,5 +8,5 @@
   "codeowners": ["@TheMegamind"],
   "config_flow": true,
   "iot_class": "cloud_polling",
-  "loggers": ["custom_components.purpleair_aqi"]
+  "loggers": ["custom_components.purpleair"]
 }
