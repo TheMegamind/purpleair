@@ -64,7 +64,7 @@ Fetches PM2.5-based AQI from nearby PurpleAir sensors, with averaging and PM2.5 
 | **Search Range**         | Radius around the coordinate (0.1–50)      |
 | **Unit**                 | Miles or kilometers                        |
 | **Weighted**             | Enable distance/quality weighted averaging |
-| **Conversion**           | PM2.5 conversion method                    |
+| **Conversion**           | PM2.5 conversion method (See below)        |
 | **Update Interval**      | Minutes between sensor refresh             |
 
 If *Device Search* is OFF, you may supply:
@@ -106,6 +106,44 @@ data:
     Current AQI: {{ states('sensor.purpleair_aqi') }} –
     {{ state_attr('sensor.purpleair_aqi', 'category') }}
 ```
+
+---
+
+## ⏱ Update Interval
+
+This setting controls how frequently the integration requests new data from the PurpleAir API and updates the sensor values inside Home Assistant.
+
+| Interval                           | What It Means    | Impact                                         |
+| ---------------------------------- | ---------------- | ---------------------------------------------- |
+| Short (e.g., **1–5 minutes**)      | Frequent updates | More API usage; more current AQI               |
+| Moderate (e.g., **10–15 minutes**) | Balanced updates | Recommended for most users                     |
+| Long (e.g., **30–60 minutes**)     | Fewer updates    | Lowest API use; slower to react to air changes |
+
+###📌 Recommendation
+
+> For most users, **10 minutes** provides a good balance between responsiveness and API efficiency.
+
+### ⚠ Notes
+
+* Shorter intervals **do not improve sensor accuracy**, only responsiveness.
+* If you are monitoring **wildfire smoke or rapid AQI changes**, consider **5–10 minutes**.
+* If you have **many PurpleAir sensors** configured, longer intervals help reduce API load.
+* The interval only affects **data refresh**, not how often the UI redraws.
+
+---
+
+## 🌫 PM₂.₅ Conversion Formulas Explained
+
+
+| Formula       | Best For                       | Description / Source                                                                                                                      |
+| ------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| **US EPA**    | Most users                     | Official U.S. EPA correction for PurpleAir data. Adjusts for humidity and general outdoor conditions. Based on multi-site national study. |
+| **Woodsmoke** | Wildfire areas                 | Optimized for particles from wildfire smoke, pellets, and wood burning. Often used in Western U.S.                                        |
+| **AQ&U**      | Mountain/valley regions (Utah) | Used by the Utah Dept. of Environmental Quality for inversion-prone areas. Works well in high-elevation, dry climates.                    |
+| **LRAPA**     | Very humid climates            | Developed by Lane Regional Air Protection Agency (Oregon). Reduces over-reporting of PM₂.₅ caused by humidity swelling tiny particles.    |
+| **CF = 1**    | Indoor sensors                 | A factory “no-correction/wet” value. High-bias outdoors, but suitable indoors (no humidity correction needed).                            |
+| **None**      | Raw data use                   | Reports the uncorrected sensor value exactly as measured. Most users shouldn’t choose this. Used for research or custom processing.       |
+
 
 ---
 
