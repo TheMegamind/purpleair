@@ -1,7 +1,7 @@
 {
   "domain": "purpleair_aqi",
   "name": "PurpleAir AQI",
-  "version": "0.1.0",
+  "version": "0.0.0-local-test"
   "documentation": "https://example.com/purpleair_aqi",
   "requirements": [],
   "dependencies": [],
