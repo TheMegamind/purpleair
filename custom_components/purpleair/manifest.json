@@ -1,6 +1,6 @@
 {
   "domain": "purpleair",
-  "name": "PurpleAir AQI",
+  "name": "PurpleAir",
   "version": "0.0.0-local-test",
   "documentation": "https://github.com/TheMegamind/purple_air/blob/main/README.md",
   "requirements": [],
