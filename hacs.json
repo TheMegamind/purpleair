@@ -1,11 +1,6 @@
 {
-  "name": "PurpleAir AQI",
-  "domains": ["sensor"],
-  "country": "US",
-  "homeassistant": "2024.1.0",
-  "render_readme": true,
-  "hacs": {
-    "type": "integration"
-  }
+  "name": "Sonos GV Test",
+  "render_readme": false,
+  "domains": ["sensor"]
 }
 
