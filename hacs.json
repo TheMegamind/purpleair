@@ -1,6 +1,6 @@
 {
   "name": "PurpleAir",
   "render_readme": false,
-  "domains": ["sensor"]
+  "domains": ["sensor","number"]
 }
 
