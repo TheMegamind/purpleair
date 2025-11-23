@@ -1,13 +1,11 @@
 
 ---
 
-<table>
-<tr>
-<td width="100">
+
+<table><tr><td width="100">
 <img src="https://github.com/TheMegamind/PurpleAir/blob/main/assets/PurpleAir.png"
      width="100" alt="PurpleAir Logo">
-</td>
-<td>
+</td><td>
 
 # PurpleAir – Home Assistant Custom Integration
 
@@ -16,13 +14,15 @@
 </table>
 
 
-**Fetches PM2.5-based AQI from nearby PurpleAir sensors, with multi-sensor averaging, adjustable polling rate, and five PM2.5 conversion options.**
+#### Fetches PM2.5-based data from nearby PurpleAir sensors, with multi-sensor averaging, an adjustable polling rate, and five PM2.5 conversion options.
 
 ---
 
 ## ✨ Features
 
-* Automatically finds **public PurpleAir sensors** with a specific distance from a location
+***Important: Home Assistant does not permit built-in integrations to provide entities based on data not directly provided by the underlying API. There are good reasons for this, and users should be cautious of the conversions and other data supplied by this custom integration. Your use of said data is at your own risk and should not be relied upon without thorough review of the underlying code.***
+
+* Automatically finds **public PurpleAir sensors** within a specific distance from a location
 * Supports a variety of **PM2.5 conversion formulas**:
 
   * US EPA
@@ -46,6 +46,7 @@
   * **sites** – List of contributing PurpleAir sensors
 * Minimal configuration required
 * Fully asynchronous and efficient
+
 
 ---
 
