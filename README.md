@@ -43,7 +43,7 @@ While there many reliable sources for AQI data, PurpleAir sensors provide **hype
 
 * **Official sensors are too far away** to represent local conditions accurately.
 * **Terrain, weather inversions, or microclimates** cause large AQI variations over short distances.
-* **Wildfire smoke or pollution events** impact specific areas unevenly, even within a single city.
+* **Wildfire smoke or pollution events** impact specific areas unevenly within a given area.
 
 By sampling from nearby monitors, users get air quality data that reflects the air where they live, rather than regional averages.
 
