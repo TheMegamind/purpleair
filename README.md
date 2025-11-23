@@ -186,9 +186,9 @@ No YAML or secrets file configuration is required.
 This project is licensed under the MIT License.
 See the `LICENSE` file for details.
 
-## Brand Disclaimer
+## Disclaimers
 
-The **PurpleAir** name and logo are trademarks of **PurpleAir, Inc.**  
-This project is an independent, community-maintained integration for Home Assistant and is **not affiliated with, endorsed by, or sponsored by PurpleAir, Inc.** in any way.
+* The **PurpleAir** name and logo are trademarks of **PurpleAir, Inc.**  
+* This project is an independent, community-maintained integration for Home Assistant and is **not affiliated with, endorsed by, or sponsored by PurpleAir, Inc.** in any way.
 
 ---
