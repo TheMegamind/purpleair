@@ -63,7 +63,7 @@ Supporting multiple sensors allows for **improved accuracy through redundancy.**
 2. Add this URL:
 
    ```
-   https://github.com/TheMegamind/purple_air
+   https://github.com/TheMegamind/purpleair
    ```
 
 3. Category: **Integration**
