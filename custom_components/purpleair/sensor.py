@@ -28,7 +28,7 @@ class PurpleAirSensor(CoordinatorEntity, SensorEntity):
     """Main PurpleAir Sensor."""
 
     _attr_has_entity_name = True
-    _attr_name = "PurpleAir"
+    _attr_name = "AQI"
     _attr_icon = "mdi:weather-hazy"
     _attr_native_unit_of_measurement = "AQI"
 
