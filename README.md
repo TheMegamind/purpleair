@@ -7,7 +7,7 @@
      width="100" alt="PurpleAir Logo">
 </td><td>
 
-# PurpleAir – Home Assistant Custom Integration
+# PurpleAir – Custom Integration for Home Assistant
 
 </td>
 </tr>
