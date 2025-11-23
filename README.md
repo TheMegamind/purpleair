@@ -37,35 +37,25 @@ Fetches PM2.5-based AQI from nearby PurpleAir sensors, with multi-sensor averagi
 
 ---
 
-### 🟣 Why Use PurpleAir?
+### 🟣 Why Use PurpleAir for AQI Monitoring?
 
-PurpleAir sensors provide **hyperlocal, real-time air quality information** directly from devices installed in neighborhoods, rather than centralized government monitoring stations. PurpleAir data is  especially valuable in locations where:
+While there many reliable sources for AQI data, PurpleAir sensors provide **hyperlocal, real-time air quality information** from devices installed in your neighborhood. This can be be especially valuable in locations where:
 
 * **Official sensors are too far away** to represent local conditions accurately.
 * **Terrain, weather inversions, or microclimates** cause large AQI variations over short distances.
 * **Wildfire smoke or pollution events** impact specific areas unevenly, even within a single city.
 
-By sampling from a sensor installed on your own home or nearby monitors, users get **air quality data that reflects the air they are actually breathing**, not regional averages.
+By sampling from nearby monitors, users get air quality data that reflects the air where they live, rather than regional averages.
 
 
 ### 🔵 Why Average Among Multiple Sensors?
 
-Indoor and outdoor conditions can differ significantly, as can readings between nearby outdoor monitors. Supporting multiple sensors allows PurpleAir AQI to:
-
-* **Improve accuracy through redundancy.** A single sensor may temporarily read high or low due to wind direction, cleaning activity, hardware contamination, or obstruction.
+Supporting multiple sensors allows for **improved accuracy through redundancy.** A single sensor may temporarily read high or low due to wind direction, cleaning activity, hardware contamination, or obstruction, ensuring earlier and more accurate alerts when outdoor air becomes unhealthy. 
 * **Differentiate indoor vs. outdoor conditions**, which is useful for:
-
-  * air purifiers
-  * ventilation control
-  * windows/doors automation
-  * alerts when outdoor air becomes unhealthy
-* **Automatically choose or combine the best inputs** instead of trusting a single device that may be impacted by localized conditions.
-
-In short: **multiple sensors = more reliable automation and healthier decisions.**
 
 ---
 
-
+*Note: This integration is still in beta and is not yet available directly in HACs.*
 
 ## 📦 Installation (HACS – Custom Repository)
 
@@ -75,6 +65,7 @@ In short: **multiple sensors = more reliable automation and healthier decisions.
    ```
    https://github.com/TheMegamind/purple_air
    ```
+
 3. Category: **Integration**
 4. Install → Restart Home Assistant
 5. Go to **Settings → Devices & Services → Add Integration**
@@ -121,21 +112,6 @@ Latitude and longitude remain fixed after initial setup. Changing the location r
 | Entity                 | Type   | Description                                |
 | ---------------------- | ------ | ------------------------------------------ |
 | `sensor.purpleair` | Sensor | PM2.5 AQI value, category, and sensor list |
-
----
-
-## 🔧 Example Usage
-
-Send AQI notifications through Pushover:
-
-```yaml
-service: notify.pushover
-data:
-  title: "Air Quality"
-  message: >
-    Current AQI: {{ states('sensor.purpleair') }} –
-    {{ state_attr('sensor.purpleair', 'category') }}
-```
 
 ---
 
