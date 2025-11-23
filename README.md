@@ -3,7 +3,7 @@
 
 # PurpleAir – Home Assistant Custom Integration
 
-Fetches PM2.5-based AQI from nearby PurpleAir sensors, with averaging and PM2.5 conversion options.
+Fetches PM2.5-based AQI from nearby PurpleAir sensors, with multi-sensor averaging, adjustable polling rate, and five PM2.5 conversion options.
 
 ---
 
