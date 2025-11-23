@@ -9,8 +9,8 @@ Fetches PM2.5-based AQI from nearby PurpleAir sensors, with averaging and PM2.5 
 
 ## ✨ Features
 
-* Automatically finds **public PurpleAir sensors** near a location
-* Supports **PM2.5 conversion formulas**:
+* Automatically finds **public PurpleAir sensors** with a specific distance from a location
+* Supports a variety of **PM2.5 conversion formulas**:
 
   * US EPA
   * Woodsmoke
@@ -36,6 +36,36 @@ Fetches PM2.5-based AQI from nearby PurpleAir sensors, with averaging and PM2.5 
 * Fully asynchronous and efficient
 
 ---
+
+### 🟣 Why Use PurpleAir?
+
+PurpleAir sensors provide **hyperlocal, real-time air quality information** directly from devices installed in neighborhoods, rather than centralized government monitoring stations. PurpleAir data is  especially valuable in locations where:
+
+* **Official sensors are too far away** to represent local conditions accurately.
+* **Terrain, weather inversions, or microclimates** cause large AQI variations over short distances.
+* **Wildfire smoke or pollution events** impact specific areas unevenly, even within a single city.
+
+By sampling from a sensor installed on your own home or nearby monitors, users get **air quality data that reflects the air they are actually breathing**, not regional averages.
+
+
+### 🔵 Why Average Among Multiple Sensors?
+
+Indoor and outdoor conditions can differ significantly, as can readings between nearby outdoor monitors. Supporting multiple sensors allows PurpleAir AQI to:
+
+* **Improve accuracy through redundancy.** A single sensor may temporarily read high or low due to wind direction, cleaning activity, hardware contamination, or obstruction.
+* **Differentiate indoor vs. outdoor conditions**, which is useful for:
+
+  * air purifiers
+  * ventilation control
+  * windows/doors automation
+  * alerts when outdoor air becomes unhealthy
+* **Automatically choose or combine the best inputs** instead of trusting a single device that may be impacted by localized conditions.
+
+In short: **multiple sensors = more reliable automation and healthier decisions.**
+
+---
+
+
 
 ## 📦 Installation (HACS – Custom Repository)
 
