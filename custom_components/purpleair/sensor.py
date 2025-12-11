@@ -3,12 +3,10 @@
 from __future__ import annotations
 
 from typing import Any
-from datetime import datetime
 
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from . import DOMAIN
@@ -49,23 +47,16 @@ class PurpleAirSensor(CoordinatorEntity, SensorEntity):
 
     @property
     def extra_state_attributes(self) -> dict[str, Any] | None:
+        """Expose Hubitat-style attributes as entity attributes."""
         result: PurpleAirResult = self.coordinator.data
         if not result:
             return None
+
         return {
             "category": result.category,
             "sites": result.sites,
             "conversion": result.conversion,
             "weighted": result.weighted,
-            "fetch_time": datetime.now().isoformat(),
+            "fetch_time": result.fetch_time,  # Comes from API, not generated each refresh
+            "update_interval": result.update_interval,  # Useful for UI visibility
         }
-
-    @property
-    def device_info(self) -> DeviceInfo:
-        """Show this sensor as a device in the Devices UI."""
-        return DeviceInfo(
-            identifiers={(DOMAIN, self.entry.entry_id)},
-            name="PurpleAir",
-            manufacturer="PurpleAir",
-            model="Air Quality Sensor",
-        )
