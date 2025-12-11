@@ -1,34 +1,7 @@
-# custom_components/purpleair/__init__.py
-
-from __future__ import annotations
-
-from datetime import timedelta   
-
-from datetime import timedelta
-import logging
-import aiohttp
-
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-
-from .api import PurpleAirClient, PurpleAirConfig
-
-DOMAIN = "purpleair"
-PLATFORMS = ["sensor", "number"]
-
-_LOGGER = logging.getLogger(__name__)
-
-
-async def async_setup(hass: HomeAssistant, config: dict) -> bool:
-    return True
-
-
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data.setdefault(DOMAIN, {})
 
     session = aiohttp.ClientSession()
-
     conf = entry.data
 
     device_search = conf.get("device_search", True)
@@ -46,7 +19,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         search_range=float(conf.get("search_range", 1.5)),
         unit=conf.get("unit", "miles"),
         weighted=conf.get("weighted", True),
-        sensor_index=int(sensor_index) if sensor_index else None,
+        sensor_index=int(sensor_index) if sensor_index is not None else None,
         read_key=read_key,
         conversion=conf.get("conversion", "US EPA"),
         update_interval=int(conf.get("update_interval", 10)),
@@ -76,17 +49,19 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         "config": cfg,
     }
 
-    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    # LOAD BOTH PLATFORMS
+    await hass.config_entries.async_forward_entry_setups(entry, ["sensor", "number"])
     return True
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+    unload_ok = await hass.config_entries.async_unload_platforms(entry, ["sensor", "number"])
 
-    session = hass.data[DOMAIN][entry.entry_id]["session"]
-    await session.close()
+    session = hass.data[DOMAIN][entry.entry_id].pop("session", None)
+    if session:
+        await session.close()
 
     if unload_ok:
-        hass.data[DOMAIN].pop(entry.entry_id)
+        hass.data[DOMAIN].pop(entry.entry_id, None)
 
     return unload_ok
