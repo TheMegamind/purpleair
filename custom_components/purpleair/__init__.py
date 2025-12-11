@@ -1,11 +1,13 @@
+# custom_components/purpleair/__init__.py
+
 from __future__ import annotations
 
 from datetime import timedelta
 import logging
+import aiohttp
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .api import PurpleAirClient, PurpleAirConfig
@@ -17,15 +19,14 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
-    """Set up integration (YAML config not supported)."""
     return True
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up PurpleAir from a config entry."""
     hass.data.setdefault(DOMAIN, {})
 
-    session = async_get_clientsession(hass)
+    session = aiohttp.ClientSession()
+
     conf = entry.data
 
     device_search = conf.get("device_search", True)
@@ -34,9 +35,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     coords = None
     if device_search:
-        lat = float(conf.get("latitude"))
-        lon = float(conf.get("longitude"))
-        coords = (lat, lon)
+        coords = (float(conf["latitude"]), float(conf["longitude"]))
 
     cfg = PurpleAirConfig(
         api_key=conf["api_key"],
@@ -45,7 +44,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         search_range=float(conf.get("search_range", 1.5)),
         unit=conf.get("unit", "miles"),
         weighted=conf.get("weighted", True),
-        sensor_index=int(sensor_index) if sensor_index is not None else None,
+        sensor_index=int(sensor_index) if sensor_index else None,
         read_key=read_key,
         conversion=conf.get("conversion", "US EPA"),
         update_interval=int(conf.get("update_interval", 10)),
@@ -62,15 +61,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     coordinator = DataUpdateCoordinator(
         hass,
         _LOGGER,
-        name="PurpleAir",
+        name="PurpleAir AQI",
         update_method=async_update,
         update_interval=timedelta(minutes=cfg.update_interval),
     )
 
-    # Fetch initial data
     await coordinator.async_config_entry_first_refresh()
 
-    # Store references properly
     hass.data[DOMAIN][entry.entry_id] = {
         "session": session,
         "coordinator": coordinator,
@@ -78,17 +75,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     }
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
-
     return True
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Unload PurpleAir."""
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
-    hass.data[DOMAIN].pop(entry.entry_id, None)
+    session = hass.data[DOMAIN][entry.entry_id]["session"]
+    await session.close()
 
-    if not hass.data[DOMAIN]:
-        hass.data.pop(DOMAIN)
+    if unload_ok:
+        hass.data[DOMAIN].pop(entry.entry_id)
 
     return unload_ok
