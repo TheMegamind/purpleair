@@ -19,12 +19,18 @@ async def async_setup_entry(
     entry: ConfigEntry,
     async_add_entities,
 ) -> None:
-    """Set up PurpleAir sensor from a config entry."""
+    """Set up PurpleAir sensors from a config entry."""
     coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
-    async_add_entities([PurpleAirSensor(coordinator, entry)], True)
+
+    entities: list[SensorEntity] = [
+        PurpleAirAQISensor(coordinator, entry),
+        PurpleAirCategorySensor(coordinator, entry),
+    ]
+
+    async_add_entities(entities, True)
 
 
-class PurpleAirSensor(CoordinatorEntity, SensorEntity):
+class PurpleAirAQISensor(CoordinatorEntity, SensorEntity):
     """Main PurpleAir AQI sensor."""
 
     _attr_has_entity_name = True
@@ -36,7 +42,7 @@ class PurpleAirSensor(CoordinatorEntity, SensorEntity):
         super().__init__(coordinator)
         self.entry = entry
         self._attr_unique_id = f"{entry.entry_id}_aqi"
-        # Store the configured update interval (minutes) for use in attributes
+        # Store configured update interval (minutes) for attributes
         self._update_interval = int(entry.data.get("update_interval", 10))
 
     @property
@@ -51,7 +57,7 @@ class PurpleAirSensor(CoordinatorEntity, SensorEntity):
 
     @property
     def extra_state_attributes(self) -> dict[str, Any] | None:
-        """Expose Hubitat-style attributes as sensor attributes."""
+        """Expose additional info similar to Hubitat attributes."""
         result: PurpleAirResult | None = self.coordinator.data
         if result is None:
             return None
@@ -61,8 +67,29 @@ class PurpleAirSensor(CoordinatorEntity, SensorEntity):
             "sites": getattr(result, "sites", None),
             "conversion": getattr(result, "conversion", None),
             "weighted": getattr(result, "weighted", None),
-            # Timestamp of last update written to HA
             "fetch_time": datetime.now().isoformat(),
-            # Polling interval configured for this sensor (minutes)
             "update_interval": self._update_interval,
         }
+
+
+class PurpleAirCategorySensor(CoordinatorEntity, SensorEntity):
+    """Sensor for the PurpleAir AQI category (Good, Moderate, etc.)."""
+
+    _attr_has_entity_name = True
+    _attr_name = "Category"
+    _attr_icon = "mdi:eye"
+
+    def __init__(self, coordinator, entry: ConfigEntry) -> None:
+        super().__init__(coordinator)
+        self.entry = entry
+        self._attr_unique_id = f"{entry.entry_id}_category"
+
+    @property
+    def native_value(self) -> str | None:
+        result: PurpleAirResult | None = self.coordinator.data
+        return result.category if result is not None else None
+
+    @property
+    def available(self) -> bool:
+        """Entity is unavailable if no data from API."""
+        return self.coordinator.data is not None
