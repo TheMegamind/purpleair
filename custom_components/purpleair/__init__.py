@@ -1,4 +1,33 @@
+# custom_components/purpleair/__init__.py
+
+from __future__ import annotations
+
+from datetime import timedelta
+import logging
+
+import aiohttp
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.update_coordinator import (
+    DataUpdateCoordinator,
+    UpdateFailed,
+)
+
+from .api import PurpleAirClient, PurpleAirConfig
+
+DOMAIN = "purpleair"
+PLATFORMS: list[str] = ["sensor", "number"]
+
+_LOGGER = logging.getLogger(__name__)
+
+
+async def async_setup(hass: HomeAssistant, config: dict) -> bool:
+    """Set up via YAML (not used, config_flow only)."""
+    return True
+
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Set up a PurpleAir config entry."""
     hass.data.setdefault(DOMAIN, {})
 
     session = aiohttp.ClientSession()
@@ -8,7 +37,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     sensor_index = conf.get("sensor_index")
     read_key = conf.get("read_key")
 
-    coords = None
+    coords: tuple[float, float] | None = None
     if device_search:
         coords = (float(conf["latitude"]), float(conf["longitude"]))
 
@@ -49,19 +78,22 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         "config": cfg,
     }
 
-    # LOAD BOTH PLATFORMS
-    await hass.config_entries.async_forward_entry_setups(entry, ["sensor", "number"])
+    # Load both sensors and number entities (Update Interval)
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    unload_ok = await hass.config_entries.async_unload_platforms(entry, ["sensor", "number"])
+    """Unload a PurpleAir config entry."""
+    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
-    session = hass.data[DOMAIN][entry.entry_id].pop("session", None)
-    if session:
-        await session.close()
+    data = hass.data[DOMAIN].pop(entry.entry_id, None)
+    if data:
+        session = data.get("session")
+        if session:
+            await session.close()
 
-    if unload_ok:
-        hass.data[DOMAIN].pop(entry.entry_id, None)
+    if not hass.data[DOMAIN]:
+        hass.data.pop(DOMAIN)
 
     return unload_ok
