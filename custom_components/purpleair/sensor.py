@@ -22,7 +22,7 @@ async def async_setup_entry(
     """Set up PurpleAir sensors from a config entry."""
     coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
 
-    entities: list[SensorEntity] = [
+    entities = [
         PurpleAirAQISensor(coordinator, entry),
         PurpleAirCategorySensor(coordinator, entry),
     ]
@@ -30,8 +30,11 @@ async def async_setup_entry(
     async_add_entities(entities, True)
 
 
+# --------------------------------------------------------------------
+# AQI SENSOR (MAIN)
+# --------------------------------------------------------------------
 class PurpleAirAQISensor(CoordinatorEntity, SensorEntity):
-    """Main PurpleAir AQI sensor."""
+    """PurpleAir AQI sensor."""
 
     _attr_has_entity_name = True
     _attr_name = "AQI"
@@ -42,38 +45,42 @@ class PurpleAirAQISensor(CoordinatorEntity, SensorEntity):
         super().__init__(coordinator)
         self.entry = entry
         self._attr_unique_id = f"{entry.entry_id}_aqi"
-        # Store configured update interval (minutes) for attributes
         self._update_interval = int(entry.data.get("update_interval", 10))
+
+    # Link to device
+    @property
+    def device_info(self):
+        return {
+            "identifiers": {(DOMAIN, self.entry.entry_id)},
+            "name": "PurpleAir",
+        }
 
     @property
     def native_value(self) -> int | None:
         result: PurpleAirResult | None = self.coordinator.data
-        return result.aqi if result is not None else None
-
-    @property
-    def available(self) -> bool:
-        """Entity is unavailable if no data from API."""
-        return self.coordinator.data is not None
+        return result.aqi if result else None
 
     @property
     def extra_state_attributes(self) -> dict[str, Any] | None:
-        """Expose additional info similar to Hubitat attributes."""
         result: PurpleAirResult | None = self.coordinator.data
-        if result is None:
+        if not result:
             return None
 
         return {
-            "category": getattr(result, "category", None),
-            "sites": getattr(result, "sites", None),
-            "conversion": getattr(result, "conversion", None),
-            "weighted": getattr(result, "weighted", None),
+            "category": result.category,
+            "sites": result.sites,
+            "conversion": result.conversion,
+            "weighted": result.weighted,
             "fetch_time": datetime.now().isoformat(),
             "update_interval": self._update_interval,
         }
 
 
+# --------------------------------------------------------------------
+# CATEGORY SENSOR
+# --------------------------------------------------------------------
 class PurpleAirCategorySensor(CoordinatorEntity, SensorEntity):
-    """Sensor for the PurpleAir AQI category (Good, Moderate, etc.)."""
+    """PurpleAir AQI Category sensor."""
 
     _attr_has_entity_name = True
     _attr_name = "Category"
@@ -85,11 +92,13 @@ class PurpleAirCategorySensor(CoordinatorEntity, SensorEntity):
         self._attr_unique_id = f"{entry.entry_id}_category"
 
     @property
-    def native_value(self) -> str | None:
-        result: PurpleAirResult | None = self.coordinator.data
-        return result.category if result is not None else None
+    def device_info(self):
+        return {
+            "identifiers": {(DOMAIN, self.entry.entry_id)},
+            "name": "PurpleAir",
+        }
 
     @property
-    def available(self) -> bool:
-        """Entity is unavailable if no data from API."""
-        return self.coordinator.data is not None
+    def native_value(self) -> str | None:
+        result: PurpleAirResult | None = self.coordinator.data
+        return result.category if result else None
