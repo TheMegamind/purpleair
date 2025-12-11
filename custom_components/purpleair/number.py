@@ -1,56 +1,64 @@
+# custom_components/purpleair/number.py
+
 from __future__ import annotations
 
-from datetime import timedelta
-
-from homeassistant.components.number import NumberEntity
-from homeassistant.const import UnitOfTime
+from homeassistant.components.number import NumberEntity, NumberMode
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from . import DOMAIN
 
-UPDATE_MIN = 1
-UPDATE_MAX = 60
 
-
-async def async_setup_entry(hass, entry, async_add_entities):
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
+    """Set up number entities."""
     coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
+    config = hass.data[DOMAIN][entry.entry_id]["config"]
 
     async_add_entities(
-        [PurpleAirUpdateIntervalNumber(coordinator, entry)],
-        update_before_add=True
+        [
+            PurpleAirUpdateIntervalNumber(coordinator, entry, config),
+        ]
     )
 
 
 class PurpleAirUpdateIntervalNumber(CoordinatorEntity, NumberEntity):
-    """Number entity to control the PurpleAir update interval."""
+    """A number entity controlling update interval."""
 
-    _attr_name = "PurpleAir Update Interval"
-    _attr_unique_id = "purpleair_update_interval"
-    _attr_native_unit_of_measurement = UnitOfTime.MINUTES
-    _attr_native_min_value = UPDATE_MIN
-    _attr_native_max_value = UPDATE_MAX
+    _attr_name = "Update Interval"
+    _attr_has_entity_name = True
+    _attr_mode = NumberMode.AUTO
+    _attr_native_unit_of_measurement = "min"
+    _attr_native_min_value = 1
+    _attr_native_max_value = 60
     _attr_native_step = 1
 
-    def __init__(self, coordinator, entry):
+    def __init__(self, coordinator, entry: ConfigEntry, config):
         super().__init__(coordinator)
         self.entry = entry
-        self._value = entry.data.get("update_interval", 10)
+        self._config = config
+        self._attr_unique_id = f"{entry.entry_id}_update_interval"
 
     @property
-    def native_value(self):
-        return self._value
+    def device_info(self):
+        return {
+            "identifiers": {(DOMAIN, self.entry.entry_id)},
+            "name": "PurpleAir",
+        }
 
-    async def async_set_native_value(self, value: float):
-        self._value = int(value)
+    @property
+    def native_value(self) -> int:
+        return self._config.update_interval
 
-        # Persist updated interval without restart
-        self.hass.config_entries.async_update_entry(
-            self.entry,
-            data={**self.entry.data, "update_interval": self._value}
-        )
+    async def async_set_native_value(self, value: float) -> None:
+        """Set polling interval dynamically."""
+        self._config.update_interval = int(value)
 
-        # Update coordinator interval correctly
-        self.coordinator.update_interval = timedelta(minutes=self._value)
+        # Update HA config entry so it's persistent
+        new_data = {**self.entry.data, "update_interval": int(value)}
+        self.hass.config_entries.async_update_entry(self.entry, data=new_data)
 
-        # Request an immediate refresh
+        # Update coordinator interval
+        self.coordinator.update_interval = timedelta(minutes=int(value))
+
         await self.coordinator.async_request_refresh()
