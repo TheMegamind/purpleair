@@ -65,8 +65,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 else:
                     data._aqi_delta = data.aqi - last_aqi
                 last_aqi = data.aqi
-            else:
+            elif data:
                 data._aqi_delta = None
+
     
             return data
     
