@@ -43,7 +43,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         search_range=float(conf.get("search_range", 1.5)),
         unit=conf.get("unit", "miles"),
         weighted=conf.get("weighted", True),
-        sensor_index=conf.get("sensor_index"),
+        sensor_index=int(conf["sensor_index"]) if conf.get("sensor_index") is not None else None,
         read_key=conf.get("read_key"),
         conversion=conf.get("conversion", "US EPA"),
         update_interval=int(conf.get("update_interval", 10)),
