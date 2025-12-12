@@ -26,7 +26,8 @@ async def async_setup_entry(
 
     async_add_entities(
         [
-            PurpleAirAQISensor(coordinator, entry),
+            PurpleAirAQISensor(coordinator, entry),       
+            PurpleAirAQIDeltaSensor(coordinator, entry),
             PurpleAirAQILevelSensor(coordinator, entry),
             PurpleAirCategorySensor(coordinator, entry),
             PurpleAirConversionSensor(coordinator, entry),
@@ -93,7 +94,9 @@ class PurpleAirAQIDeltaSensor(PurpleAirBase):
 
     @property
     def native_value(self):
-        return self.result.delta if self.result else None
+        if not self.result:
+            return None
+        return getattr(self.result, "_aqi_delta", None)
 
 
 # ────────────────────────────────────────────────────────────────
