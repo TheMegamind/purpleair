@@ -59,6 +59,7 @@ class PurpleAirBase(CoordinatorEntity, SensorEntity):
 class PurpleAirAQISensor(PurpleAirBase):
     _attr_name = "AQI"
     _attr_icon = "mdi:weather-hazy"
+    # An Air Quality Index (AQI) value is a unitless number
     # _attr_native_unit_of_measurement = "AQI"
     _attr_state_class = SensorStateClass.MEASUREMENT
 
@@ -73,7 +74,9 @@ class PurpleAirAQISensor(PurpleAirBase):
 
 class PurpleAirAQIDeltaSensor(PurpleAirBase):
     _attr_name = "AQI Delta"
+    _attr_object_id = "purpleair_aqi_delta"
     _attr_icon = "mdi:vector-difference"
+    # An Air Quality Index (AQI) value is a unitless number
     # _attr_native_unit_of_measurement = "AQI"
     _attr_state_class = SensorStateClass.MEASUREMENT
 
@@ -98,6 +101,7 @@ CATEGORY_TO_LEVEL = {
 
 class PurpleAirAQILevelSensor(PurpleAirBase):
     _attr_name = "AQI Level"
+    _attr_object_id = "purpleair_aqi_level"
     _attr_icon = "mdi:numeric"
 
     @property
@@ -138,6 +142,7 @@ CATEGORY_TO_COLOR = {
 
 class PurpleAirAQIColorSensor(PurpleAirBase):
     _attr_name = "AQI Color"
+    _attr_object_id = "purpleair_aqi_color"
     _attr_icon = "mdi:palette"
 
     @property
@@ -186,6 +191,7 @@ class PurpleAirHealthAdvisorySensor(PurpleAirBase):
 
 class PurpleAirHealthStatusSensor(PurpleAirBase):
     _attr_name = "Health Status"
+    _attr_object_id = "purpleair_health_status"
 
     @property
     def unique_id(self):
