@@ -12,13 +12,17 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from . import DOMAIN
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities,
+) -> None:
     coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
     async_add_entities([PurpleAirUpdateIntervalNumber(coordinator, entry)])
 
 
 class PurpleAirUpdateIntervalNumber(CoordinatorEntity, NumberEntity):
-    """Number entity that controls the polling interval."""
+    """Controls the PurpleAir polling interval."""
 
     _attr_has_entity_name = True
     _attr_name = "Update Interval"
@@ -29,12 +33,11 @@ class PurpleAirUpdateIntervalNumber(CoordinatorEntity, NumberEntity):
     _attr_native_unit_of_measurement = "min"
     _attr_mode = "slider"
 
-    def __init__(self, coordinator, entry):
+    def __init__(self, coordinator, entry: ConfigEntry) -> None:
         super().__init__(coordinator)
         self.entry = entry
         self._attr_unique_id = f"{entry.entry_id}_update_interval"
 
-    # NEW — THIS FIXES THE MISSING CONTROL
     @property
     def device_info(self):
         return {
@@ -46,11 +49,9 @@ class PurpleAirUpdateIntervalNumber(CoordinatorEntity, NumberEntity):
     def native_value(self):
         return int(self.entry.data.get("update_interval", 10))
 
-    async def async_set_native_value(self, value):
-        """User adjusted the slider."""
+    async def async_set_native_value(self, value: float) -> None:
         new = {**self.entry.data, "update_interval": int(value)}
         self.hass.config_entries.async_update_entry(self.entry, data=new)
 
-        # Apply update interval immediately
         self.coordinator.update_interval = timedelta(minutes=int(value))
         await self.coordinator.async_request_refresh()
