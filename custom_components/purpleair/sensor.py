@@ -59,7 +59,7 @@ class PurpleAirBase(CoordinatorEntity, SensorEntity):
 class PurpleAirAQISensor(PurpleAirBase):
     _attr_name = "AQI"
     _attr_icon = "mdi:weather-hazy"
-    _attr_native_unit_of_measurement = "AQI"
+    # _attr_native_unit_of_measurement = "AQI"
     _attr_state_class = SensorStateClass.MEASUREMENT
 
     @property
@@ -74,7 +74,7 @@ class PurpleAirAQISensor(PurpleAirBase):
 class PurpleAirAQIDeltaSensor(PurpleAirBase):
     _attr_name = "AQI Delta"
     _attr_icon = "mdi:vector-difference"
-    _attr_native_unit_of_measurement = "AQI"
+    # _attr_native_unit_of_measurement = "AQI"
     _attr_state_class = SensorStateClass.MEASUREMENT
 
     @property
