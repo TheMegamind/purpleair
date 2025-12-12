@@ -80,7 +80,11 @@ class PurpleAirBaseSensor(CoordinatorEntity, SensorEntity):
         )
 
 
+# ─────────────────────────────────────────────────────────────
+# AQI — FEATURED on Device page
+# ─────────────────────────────────────────────────────────────
 class PurpleAirAQISensor(PurpleAirBaseSensor):
+    _attr_has_entity_name = True  # ← THIS is the fix
     _attr_name = "AQI"
     _attr_icon = "mdi:weather-hazy"
     _attr_native_unit_of_measurement = "AQI"
@@ -184,8 +188,21 @@ class PurpleAirAQILevelSensor(PurpleAirBaseSensor):
 
     @property
     def native_value(self):
-        level = CATEGORY_TO_LEVEL.get(self.result.category) if self.result else None
-        return str(level) if level is not None else None
+        if not self.result or self.result.aqi is None:
+            return None
+
+        aqi = self.result.aqi
+        if aqi <= 50:
+            return "1"
+        if aqi <= 100:
+            return "2"
+        if aqi <= 150:
+            return "3"
+        if aqi <= 200:
+            return "4"
+        if aqi <= 300:
+            return "5"
+        return "6"
 
 
 class PurpleAirAQIDeltaSensor(PurpleAirBaseSensor):
