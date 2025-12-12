@@ -119,7 +119,9 @@ class PurpleAirAQILevelSensor(PurpleAirBase):
     def native_value(self):
         if not self.result:
             return None
-        return CATEGORY_TO_LEVEL.get(self.result.category)
+        level = CATEGORY_TO_LEVEL.get(self.result.category)
+        return str(level) if level is not None else None
+
 
 
 # ────────────────────────────────────────────────────────────────
